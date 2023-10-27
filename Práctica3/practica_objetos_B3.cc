@@ -30,6 +30,7 @@ int Window_x=50,Window_y=50,Window_width=650,Window_high=650;
 
 // objetos
 _modulo_base modulo;
+_modulo_central centro;
 _piramide piramide(0.85,1.3);
 _objeto_ply  ply; 
 _rotacion rotacion;
@@ -118,7 +119,7 @@ void draw_objects()
 {
 
 switch (t_objeto){
-	case CUBO: modulo.draw(modo,1.0,0.0,0.0,5);break;
+	case CUBO: modulo.draw(modo,1.0,0.0,0.0,5);centro.draw(modo,1.0,0.0,0.0,5);break;
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,5);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,5);break;
         case ROTACION: perfil_ply.draw(modo,1.0,0.0,0.0,5);break;

@@ -331,6 +331,13 @@ public:
 	_modulo_base(float tam=0.5);
 };
 
+class _modulo_central: public _triangulos3D
+{
+public:
+
+	_modulo_central(float tam=0.5);
+};
+
 class _cuerpo: public _triangulos3D{
        public:
        _cuerpo();
@@ -339,7 +346,7 @@ class _cuerpo: public _triangulos3D{
        protected:
        _cilindro cuello;
        _modulo_base delantero;
-       _cubo centro;
+       _modulo_central central;
        _modulo_base trasero;
        _cubo base;
 
