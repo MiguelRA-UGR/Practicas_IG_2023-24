@@ -9,7 +9,7 @@
 
 
 const float AXIS_SIZE=5000;
-typedef enum{POINTS,EDGES,SOLID,SOLID_COLORS} _modo;
+typedef enum{POINTS,EDGES,SOLID,SOLID_COLORS,ROJOS,VERDES,AZULES} _modo;
 
 //*************************************************************************
 // clase punto
@@ -38,10 +38,11 @@ public:
 	_triangulos3D();
 void 	draw_aristas(float r, float g, float b, int grosor);
 void    draw_solido(float r, float g, float b);
-void 	draw_solido_colores();
+void 	draw_solido_colores(int modo);
 void 	draw(_modo modo, float r, float g, float b, float grosor);
 
 /* asignación de colores */
+void gradiente_vertical(vector<_vertex3f>* vertices=nullptr, int vueltas=NULL);
 void 	colors_random();
 void 	colors_chess(float r1, float g1, float b1, float r2, float g2, float b2);
 
@@ -273,4 +274,86 @@ _pala pala;
 _brazo brazo;
 _cabina cabina;
 _sustentacion sustentacion;
+};
+
+//************************************************************************
+// atat
+//************************************************************************
+
+class _pata: public _triangulos3D{
+       public:
+       _pata();
+       protected:
+       _cubo cuerpo_superior;
+       _cubo cuerpo_inferior;
+       _cilindro articulacion_superior;
+       _cilindro articulacion_inferior;
+       _pie pie;
+};
+
+class _pie: public _triangulos3D{
+       //por rotacion
+       public:
+       _pie();
+};
+class _torreta: public _triangulos3D{
+       public:
+       _torreta();
+       protected:
+       _esfera montura_torreta;
+       _cubo base_torreta;
+       _cilindro cañon;
+};
+
+class _cabina_mando: public _triangulos3D{
+       public:
+       _cabina_mando();
+};
+
+class _cabeza: public _triangulos3D{
+       public:
+       _cabeza();
+
+       protected:
+       _cabina_mando cabina;
+       _torreta torreta_izquierda;
+       _torreta torreta_derecha;
+       _cilindro cañon_derecho;
+       _cilindro cañon_izquierdo;
+
+};
+
+class _modulo_base: public _triangulos3D{
+       public:
+       _modulo_base();
+};
+
+class _cuerpo: public _triangulos3D{
+       public:
+       _cuerpo();
+       
+
+       protected:
+       _cilindro cuello;
+       _modulo_base delantero;
+       _cubo centro;
+       _modulo_base trasero;
+       _cubo base;
+
+};
+
+class _atat: public _triangulos3D
+{
+       public:
+              _atat();
+              
+       void  draw(_modo modo, float r, float g, float b, float grosor);
+
+       protected:
+       _cuerpo cuerpo;
+       _cabeza cabeza;
+       _pata delantera_dcha;
+       _pata delantera_izqda;
+       _pata trasera_dcha;
+       _pata delantera_izqda;
 };

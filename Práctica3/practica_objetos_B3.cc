@@ -37,6 +37,7 @@ _cilindro cilindro(1,2,6);
 _cono cono(1,2,6);
 _esfera esfera(1,6,6);
 _excavadora excavadora;
+_rotacion_PLY perfil_ply;
 _extrusion *extrusion;
 
 // _objeto_ply *ply;
@@ -120,7 +121,7 @@ switch (t_objeto){
 	case CUBO: cubo.draw(modo,1.0,0.0,0.0,5);break;
 	case PIRAMIDE: piramide.draw(modo,1.0,0.0,0.0,5);break;
         case OBJETO_PLY: ply.draw(modo,1.0,0.6,0.0,5);break;
-        case ROTACION: rotacion.draw(modo,1.0,0.0,0.0,5);break;
+        case ROTACION: perfil_ply.draw(modo,1.0,0.0,0.0,5);break;
         case CILINDRO: cilindro.draw(modo,1.0,0.0,0.0,5);break;
         case CONO: cono.draw(modo,1.0,0.0,0.0,5);break;
         case ESFERA: esfera.draw(modo,1.0,0.0,0.0,5);break;
@@ -183,6 +184,9 @@ switch (toupper(Tecla1)){
 	case '2':modo=EDGES;break;
 	case '3':modo=SOLID;break;
 	case '4':modo=SOLID_COLORS;break;
+    case '5':modo=ROJOS;break;
+	case '6':modo=VERDES;break;
+	case '7':modo=AZULES;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
         case 'O':t_objeto=OBJETO_PLY;break;	
@@ -350,6 +354,7 @@ initialize();
 
 // creación del objeto ply
 ply.parametros(argv[1]);
+perfil_ply.parametros_PLY(argv[2],50);
 
 //ply = new _objeto_ply(argv[1]);
 

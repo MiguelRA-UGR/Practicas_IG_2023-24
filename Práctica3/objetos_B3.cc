@@ -5,6 +5,7 @@
 #include "objetos_B3.h"
 #include "file_ply_stl.hpp"
 #include <time.h> 
+#include <set>
 
 
 //*************************************************************************
@@ -100,17 +101,48 @@ glEnd();
 // dibujar en modo sólido con colores diferentes para cada cara
 //*************************************************************************
 
-void _triangulos3D::draw_solido_colores( )
-{
-int i;
-glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-glBegin(GL_TRIANGLES);
-for (i=0;i<caras.size();i++){
-	glColor3f(colores_caras[i].r,colores_caras[i].g,colores_caras[i].b);
-	glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
-	glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
-	glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
-	}
+void _triangulos3D::draw_solido_colores(int modo)
+{ int i;
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+  glBegin(GL_TRIANGLES);
+
+  switch(modo){
+    case 0:
+       for (i=0;i<caras.size();i++){
+        glColor3f(colores_caras[i].r,colores_caras[i].g,colores_caras[i].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+    break;
+
+    case 1:
+      for (i=0;i<caras.size();i++){
+        glColor3f(colores_caras[i].r,colores_caras[i].g*0.2,colores_caras[i].b*0.1);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+    break;
+
+    case 2:
+      for (i=0;i<caras.size();i++){
+        glColor3f(colores_caras[i].r*0.1,colores_caras[i].g,colores_caras[i].b*0.2);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+    break;
+
+    case 3:
+      for (i=0;i<caras.size();i++){
+        glColor3f(colores_caras[i].r*0.1,colores_caras[i].g*0.2,colores_caras[i].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+    break;
+  }
 glEnd();
 }
 
@@ -125,13 +157,84 @@ switch (modo){
 	case POINTS:draw_puntos(r, g, b, grosor);break;
 	case EDGES:draw_aristas(r, g, b, grosor);break;
 	case SOLID:draw_solido(r, g, b);break;
-	case SOLID_COLORS:draw_solido_colores();break;
+	case SOLID_COLORS:draw_solido_colores(0);break;
+  case ROJOS:draw_solido_colores(1);break;
+  case VERDES:draw_solido_colores(2);break;
+  case AZULES:draw_solido_colores(3);break;
 	}
 }
 
 //*************************************************************************
 // asignación colores
 //*************************************************************************
+
+
+void _triangulos3D::gradiente_vertical(vector<_vertex3f>* perfil, int vueltas){
+  bool es_objeto_revolucion= (perfil==nullptr||vueltas==0) ? false:true;
+  colores_caras.resize(caras.size());
+  double min_y = INFINITY;
+  double max_y = -INFINITY;
+  set <double> valores_y;
+  int num_niveles=0;
+
+  //Si no es un objeto de revolución calculamos la cantidad de niveles según el valor y de los vértices
+  if(!es_objeto_revolucion){
+    for(int i=0; i < vertices.size(); i++){
+      if(valores_y.find(vertices[i].y)==valores_y.end()){
+        valores_y.insert(vertices[i].y);
+      }
+    }
+
+    num_niveles=valores_y.size();
+  }
+
+  else{
+    //Calculamos los niveles como la cantidad de puntos menos el último y primero(tapas)
+    num_niveles=((perfil->size())*2)-3;
+  }
+
+  min_y=0;
+  max_y=num_niveles;
+
+  double valores_gradiente[num_niveles];
+
+  for(int i=0; i < num_niveles; i++){
+    //Calculamos los valores normalizando entre 0 y 1
+    valores_gradiente[i] = (i-min_y)/(max_y-min_y);
+  }
+
+  for(int i=0; i < caras.size(); i++){
+    for(int j=0; j < num_niveles; j++){
+      colores_caras[i].r=valores_gradiente[j];
+      colores_caras[i].g=valores_gradiente[j];
+      colores_caras[i].b=valores_gradiente[j];
+
+      if(i < caras.size()-1){
+        i++;
+        colores_caras[i].r=valores_gradiente[j];
+        colores_caras[i].g=valores_gradiente[j];
+        colores_caras[i].b=valores_gradiente[j];
+      }
+    }
+
+    //Tratamiento de las tapas
+    if(es_objeto_revolucion){
+      //tapa de arriba
+      for(int i=caras.size()-vueltas-1; i < caras.size(); i++){
+        colores_caras[i].r=valores_gradiente[num_niveles-1];
+        colores_caras[i].g=valores_gradiente[num_niveles-1];
+        colores_caras[i].b=valores_gradiente[num_niveles-1];
+      }
+
+      //tapa de abajo
+      for(int i=caras.size()-2*vueltas; i < caras.size()-vueltas; i++){
+        colores_caras[i].r=valores_gradiente[0];
+        colores_caras[i].g=valores_gradiente[0];
+        colores_caras[i].b=valores_gradiente[0];
+      }
+    }
+  }
+}
 
 void _triangulos3D::colors_random()
 {
@@ -386,7 +489,8 @@ if (tapa_su==1)
 }
 
 //colores de las caras
-colors_random();
+//colors_random();
+gradiente_vertical(&perfil,num);
 }
 
 
@@ -498,7 +602,28 @@ _rotacion_PLY::_rotacion_PLY()
 
 void _rotacion_PLY::parametros_PLY(char *archivo, int num)
 {
+int i, n_ver;
 
+  vector<float> ver_ply;
+  vector<int> car_ply;
+
+  _file_ply::read(archivo, ver_ply,car_ply);
+
+  n_ver=ver_ply.size()/3;
+
+  printf("Number of vertices=d\n", n_ver);
+
+  vector<_vertex3f> perfil;
+
+  for(i=0; i<n_ver;i++){
+    _vertex3f aux;
+    aux.x = ver_ply[3*i];
+    aux.y = ver_ply[3*i + 1];
+    aux.z = ver_ply[3*i + 2];
+    perfil.push_back(aux);
+  }
+
+  parametros(perfil, num, 1,1,0);
 }
 
 //************************************************************************
