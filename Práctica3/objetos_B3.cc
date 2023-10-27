@@ -384,7 +384,8 @@ for (i=0;i<n_car;i++)
   }
 
 // colores
-colors_random();
+//colors_random();
+gradiente_vertical();
 }
 
 
