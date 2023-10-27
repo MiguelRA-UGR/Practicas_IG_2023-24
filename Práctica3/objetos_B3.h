@@ -280,6 +280,12 @@ _sustentacion sustentacion;
 // atat
 //************************************************************************
 
+class _pie: public _triangulos3D{
+       //por rotacion
+       public:
+       _pie();
+};
+
 class _pata: public _triangulos3D{
        public:
        _pata();
@@ -291,11 +297,6 @@ class _pata: public _triangulos3D{
        _pie pie;
 };
 
-class _pie: public _triangulos3D{
-       //por rotacion
-       public:
-       _pie();
-};
 class _torreta: public _triangulos3D{
        public:
        _torreta();
@@ -323,9 +324,11 @@ class _cabeza: public _triangulos3D{
 
 };
 
-class _modulo_base: public _triangulos3D{
-       public:
-       _modulo_base();
+class _modulo_base: public _triangulos3D
+{
+public:
+
+	_modulo_base(float tam=0.5);
 };
 
 class _cuerpo: public _triangulos3D{
@@ -355,5 +358,5 @@ class _atat: public _triangulos3D
        _pata delantera_dcha;
        _pata delantera_izqda;
        _pata trasera_dcha;
-       _pata delantera_izqda;
+       _pata trasera_izqda;
 };
