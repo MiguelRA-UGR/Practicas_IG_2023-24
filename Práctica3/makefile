@@ -12,7 +12,7 @@ CPPFLAGS:= -Wall -fmax-errors=2 -g
 CC= g++
 
 x: $(EJECUTABLE)
-	./$(EJECUTABLE) cuerpo perfil_ply
+	./$(EJECUTABLE) boca_canion perfil_ply
 
 $(EJECUTABLE): $(MODULOS)	
 	$(CC) -o $(EJECUTABLE) $(LDFLAGS) $(MODULOS) $(LIBS) 
