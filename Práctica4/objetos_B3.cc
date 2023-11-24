@@ -187,6 +187,8 @@ for (i=0;i<n_c;i++)
    normales_caras[i].y/=modulo;   
    normales_caras[i].z/=modulo;     
   }
+
+  calculadas_normales_caras=1;
 }
 
 //*************************************************************************
@@ -195,6 +197,8 @@ void _triangulos3D::calcular_normales_vertices()
 {
 int i, n_c, n_v;
 float modulo;
+
+if(calculadas_normales_caras==0)calcular_normales_caras;
 
 n_v=vertices.size();
 normales_vertices.resize(n_v);
@@ -341,6 +345,33 @@ for (i=0;i<n_c;i++)
 void _triangulos3D::colors_diffuse_gouraud (float kr, float kg, float kb,
                              float lpx, float lpy, float lpz)
 {
+int i, n_c;
+float modulo, escalar;
+_vertex3f l;
+
+n_c=caras.size();
+colores_caras.resize(n_c);
+for (i=0;i<n_c;i++)
+  {
+   l.x=lpx-vertices[caras[i]._0].x;
+   l.y=lpy-vertices[caras[i]._0].y;
+   l.z=lpz-vertices[caras[i]._0].z;
+   modulo=sqrt(l.x*l.x+l.y*l.y+l.z*l.z);
+   l.x/=modulo;
+   l.y/=modulo;
+   l.z/=modulo;
+   
+   escalar=l.x*normales_caras[i].x+l.y*normales_caras[i].y+l.z*normales_caras[i].z;
+   if (escalar>0.0)
+     {colores_caras[i].r=kr*escalar;
+      colores_caras[i].g=kg*escalar;
+      colores_caras[i].b=kb*escalar;
+     }
+   else {colores_caras[i].r=0.0;
+        colores_caras[i].g=0.0;
+        colores_caras[i].b=0.0;
+        }
+  }
 }
 
 //*************************************************************************
@@ -457,6 +488,9 @@ for (i=0;i<n_car;i++)
 
 //normales
 calcular_normales_caras();
+
+calcular_normales_vertices();
+
 //colors_random();
 //gradiente_vertical(1,0.5,0.5,0,1,0.75);
 

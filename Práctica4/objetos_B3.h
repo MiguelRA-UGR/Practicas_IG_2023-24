@@ -62,7 +62,7 @@ vector<_vertex3f> colores_vertices;
 vector<_vertex3f> normales_caras;
 vector<_vertex3f> normales_vertices;
 
-int calculadas_normales_caras;
+int calculadas_normales_caras=0;
 };
 
 //*************************************************************************
