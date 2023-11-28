@@ -154,12 +154,13 @@ glEnd();
 
 void _triangulos3D::draw_solido_colores_vertices(int modo)
 { int i;
+  glShadeModel(GL_SMOOTH);
   glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
   glBegin(GL_TRIANGLES);
-  glShadeModel(GL_SMOOTH);
+  
 
-  switch(modo){
-    case 0:
+  //switch(modo){
+    //case 0:
        for (i=0;i<caras.size();i++){
         glColor3f(colores_vertices[caras[i]._0].r,
                   colores_vertices[caras[i]._0].g,
@@ -176,7 +177,8 @@ void _triangulos3D::draw_solido_colores_vertices(int modo)
                   colores_vertices[caras[i]._2].b);
         glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
       }
-    break;
+
+/*
 
     case 1:
       for (i=0;i<caras.size();i++){
@@ -235,7 +237,9 @@ void _triangulos3D::draw_solido_colores_vertices(int modo)
         glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
       }
     break;
+    
   }
+  */
 glEnd();
 glShadeModel(GL_FLAT);
 }
@@ -662,7 +666,7 @@ calcular_normales_vertices();
 //gradiente_vertical(1,0.5,0.5,0,1,0.75);
 
 colors_diffuse_flat((float)206/255.0,(float)208/255.0,(float)211/255.0,20,40,20);
-colors_diffuse_gouraud((float)206/255.0,(float)208/255.0,(float)211/255.0,20,40,20);
+colors_diffuse_gouraud((float)206/255.0,(float)208/255.0,(float)211/255.0,20,50,20);
 }
 
 
