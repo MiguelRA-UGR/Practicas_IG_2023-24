@@ -48,10 +48,10 @@ glEnd();*/
 _triangulos3D::_triangulos3D()
 {
   calculadas_normales_caras=0;
-  ambiente =_vertex4f(0.8,0.4,0.2,1.0);
-  difuso=_vertex4f(0.8,0.4,0.2,1.0);
+  ambiente =_vertex4f(0.19,0.19,0.19,1.0);
+  difuso=_vertex4f(0.5,0.5,0.5,1.0);
   especular=_vertex4f(0.5,0.5,0.5,1.0);
-  brillo=10;
+  brillo=51.2;
 }
 
 
