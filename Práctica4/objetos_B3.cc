@@ -159,8 +159,8 @@ void _triangulos3D::draw_solido_colores_vertices(int modo)
   glBegin(GL_TRIANGLES);
   
 
-  //switch(modo){
-    //case 0:
+  switch(modo){
+    case 0:
        for (i=0;i<caras.size();i++){
         glColor3f(colores_vertices[caras[i]._0].r,
                   colores_vertices[caras[i]._0].g,
@@ -177,8 +177,6 @@ void _triangulos3D::draw_solido_colores_vertices(int modo)
                   colores_vertices[caras[i]._2].b);
         glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
       }
-
-/*
 
     case 1:
       for (i=0;i<caras.size();i++){
@@ -239,7 +237,6 @@ void _triangulos3D::draw_solido_colores_vertices(int modo)
     break;
     
   }
-  */
 glEnd();
 glShadeModel(GL_FLAT);
 }

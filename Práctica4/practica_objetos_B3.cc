@@ -170,7 +170,7 @@ void luces()
     GLfloat luz_ambiental[] = {0.05, 0.05, 0.05, 1.0};
     GLfloat luz_difusa[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat luz_especular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat luz_posicion[] = {0.0, 0.0, 20.0, 1.0};
+    GLfloat luz_posicion[] = {20.0, 20.0, 20.0, 1.0};
 
     // Habilitar iluminación y la luz específica (GL_LIGHT0)
     glEnable(GL_LIGHTING);
@@ -182,9 +182,6 @@ void luces()
     glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular);
     glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
 
-    // Deshabilitar la luz (GL_LIGHT0)
-    glDisable(GL_LIGHT0);
-    
     // También puedes deshabilitar la iluminación si es necesario
     glDisable(GL_LIGHTING);
 }
