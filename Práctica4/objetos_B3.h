@@ -9,7 +9,7 @@
 
 
 const float AXIS_SIZE=5000;
-typedef enum{POINTS,EDGES,SOLID,SOLID_COLORS,ROJOS,VERDES,AZULES} _modo;
+typedef enum{POINTS,EDGES,SOLID,SOLID_COLORS,SOLID_COLORS_GOURAUD,SOLIDO_PHONG_FLAT,SOLIDO_PHONG_GOURAUD,ROJOS,VERDES,AZULES} _modo;
 
 //*************************************************************************
 // clase punto
@@ -40,6 +40,9 @@ public:
 void 	draw_aristas(float r, float g, float b, int grosor);
 void    draw_solido(float r, float g, float b);
 void 	draw_solido_colores(int modo);
+void 	draw_solido_colores_vertices(int modo);
+void 	draw_solido_phong_flat();
+void 	draw_solido_phong_gouraud();
 void 	draw(_modo modo, float r, float g, float b, float grosor);
 
 /* asignación de colores */
@@ -62,7 +65,14 @@ vector<_vertex3f> colores_vertices;
 vector<_vertex3f> normales_caras;
 vector<_vertex3f> normales_vertices;
 
-int calculadas_normales_caras=0;
+int calculadas_normales_caras;
+
+//material
+_vertex4f ambiente;
+_vertex4f difuso;
+_vertex4f especular;
+float brillo;
+
 };
 
 //*************************************************************************

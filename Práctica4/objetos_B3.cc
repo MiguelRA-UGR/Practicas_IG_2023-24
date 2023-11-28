@@ -47,6 +47,11 @@ glEnd();*/
 
 _triangulos3D::_triangulos3D()
 {
+  calculadas_normales_caras=0;
+  ambiente =_vertex4f(0.8,0.4,0.2,1.0);
+  difuso=_vertex4f(0.8,0.4,0.2,1.0);
+  especular=_vertex4f(0.5,0.5,0.5,1.0);
+  brillo=10;
 }
 
 
@@ -147,6 +152,152 @@ glEnd();
 }
 
 
+void _triangulos3D::draw_solido_colores_vertices(int modo)
+{ int i;
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+  glBegin(GL_TRIANGLES);
+  glShadeModel(GL_SMOOTH);
+
+  switch(modo){
+    case 0:
+       for (i=0;i<caras.size();i++){
+        glColor3f(colores_vertices[caras[i]._0].r,
+                  colores_vertices[caras[i]._0].g,
+                  colores_vertices[caras[i]._0].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+
+        glColor3f(colores_vertices[caras[i]._1].r,
+                  colores_vertices[caras[i]._1].g,
+                  colores_vertices[caras[i]._1].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+
+        glColor3f(colores_vertices[caras[i]._2].r,
+                  colores_vertices[caras[i]._2].g,
+                  colores_vertices[caras[i]._2].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+    break;
+
+    case 1:
+      for (i=0;i<caras.size();i++){
+        glColor3f(colores_vertices[caras[i]._0].r,
+                  colores_vertices[caras[i]._0].g*0.2,
+                  colores_vertices[caras[i]._0].b*0.1);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+
+        glColor3f(colores_vertices[caras[i]._1].r,
+                  colores_vertices[caras[i]._1].g,
+                  colores_vertices[caras[i]._1].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+
+        glColor3f(colores_vertices[caras[i]._2].r,
+                  colores_vertices[caras[i]._2].g,
+                  colores_vertices[caras[i]._2].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+
+      }
+    break;
+
+    case 2:
+      for (i=0;i<caras.size();i++){
+        glColor3f(colores_vertices[caras[i]._0].r*0.1,
+                  colores_vertices[caras[i]._0].g,
+                  colores_vertices[caras[i]._0].b*0.2);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+
+        glColor3f(colores_vertices[caras[i]._1].r,
+                  colores_vertices[caras[i]._1].g,
+                  colores_vertices[caras[i]._1].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+
+        glColor3f(colores_vertices[caras[i]._2].r,
+                  colores_vertices[caras[i]._2].g,
+                  colores_vertices[caras[i]._2].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+    break;
+
+    case 3:
+      for (i=0;i<caras.size();i++){
+        glColor3f(colores_vertices[caras[i]._0].r*0.1,
+                  colores_vertices[caras[i]._0].g*0.2,
+                  colores_vertices[caras[i]._0].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+
+        glColor3f(colores_vertices[caras[i]._1].r,
+                  colores_vertices[caras[i]._1].g,
+                  colores_vertices[caras[i]._1].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+
+        glColor3f(colores_vertices[caras[i]._2].r,
+                  colores_vertices[caras[i]._2].g,
+                  colores_vertices[caras[i]._2].b);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+    break;
+  }
+glEnd();
+glShadeModel(GL_FLAT);
+}
+
+//*************************************************************************
+// dibujar con iluminación local
+//*************************************************************************
+
+void _triangulos3D::draw_solido_phong_flat(){
+  int i;
+  
+  glShadeModel(GL_FLAT);
+  glEnable(GL_NORMALIZE);
+  glEnable(GL_LIGHTING);
+
+  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,(GLfloat *)&ambiente);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,(GLfloat *)&difuso);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,(GLfloat *)&especular);
+  glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,brillo);
+
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+
+  glBegin(GL_TRIANGLES);
+    for (i=0;i<caras.size();i++){
+        glNormal3f(normales_caras[i].x,normales_caras[i].y,normales_caras[i].z);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+  glEnd();
+
+  glDisable(GL_LIGHTING);
+}
+
+void _triangulos3D::draw_solido_phong_gouraud(){
+  int i;
+  
+  glShadeModel(GL_SMOOTH);
+  glEnable(GL_NORMALIZE);
+  glEnable(GL_LIGHTING);
+
+  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,(GLfloat *)&ambiente);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,(GLfloat *)&difuso);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,(GLfloat *)&especular);
+  glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,brillo);
+
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+
+  glBegin(GL_TRIANGLES);
+    for (i=0;i<caras.size();i++){
+        glNormal3fv((GLfloat *) &normales_vertices[caras[i]._0]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+        glNormal3fv((GLfloat *) &normales_vertices[caras[i]._1]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+        glNormal3fv((GLfloat *) &normales_vertices[caras[i]._2]);
+        glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+      }
+  glEnd();
+
+  glDisable(GL_LIGHTING);
+}
+
 //*************************************************************************
 // dibujar con distintos modos
 //*************************************************************************
@@ -158,6 +309,9 @@ switch (modo){
 	case EDGES:draw_aristas(r, g, b, grosor);break;
 	case SOLID:draw_solido(r, g, b);break;
 	case SOLID_COLORS:draw_solido_colores(0);break;
+  case SOLID_COLORS_GOURAUD:draw_solido_colores_vertices(0);break;
+  case SOLIDO_PHONG_FLAT:draw_solido_phong_flat();break;
+  case SOLIDO_PHONG_GOURAUD:draw_solido_phong_gouraud();break;
   case ROJOS:draw_solido_colores(1);break;
   case VERDES:draw_solido_colores(2);break;
   case AZULES:draw_solido_colores(3);break;
@@ -198,7 +352,8 @@ void _triangulos3D::calcular_normales_vertices()
 int i, n_c, n_v;
 float modulo;
 
-if(calculadas_normales_caras==0)calcular_normales_caras;
+if(calculadas_normales_caras==0)
+  calcular_normales_caras();
 
 n_v=vertices.size();
 normales_vertices.resize(n_v);
@@ -274,7 +429,7 @@ void _triangulos3D::gradiente_vertical(const double r1, const double g1, const d
 
 void _triangulos3D::colors_random()
 {
-int i, n_c;
+int i, n_c,n_v;
 n_c=caras.size();
 colores_caras.resize(n_c);
 srand (time(NULL));
@@ -282,6 +437,15 @@ for (i=0;i<n_c;i++)
   {colores_caras[i].r=rand()%1000/1000.0;
    colores_caras[i].g=rand()%1000/1000.0;
    colores_caras[i].b=rand()%1000/1000.0;
+  }
+
+n_v=vertices.size();
+colores_vertices.resize(n_v);
+srand (time(NULL));
+for (i=0;i<n_v;i++)  
+  {colores_vertices[i].r=rand()%1000/1000.0;
+   colores_vertices[i].g=rand()%1000/1000.0;
+   colores_vertices[i].b=rand()%1000/1000.0;
   }
 }
 
@@ -345,31 +509,34 @@ for (i=0;i<n_c;i++)
 void _triangulos3D::colors_diffuse_gouraud (float kr, float kg, float kb,
                              float lpx, float lpy, float lpz)
 {
-int i, n_c;
+int i, n_v;
 float modulo, escalar;
 _vertex3f l;
 
-n_c=caras.size();
-colores_caras.resize(n_c);
-for (i=0;i<n_c;i++)
+n_v=vertices.size();
+colores_vertices.resize(n_v);
+for (i=0;i<n_v;i++)
   {
-   l.x=lpx-vertices[caras[i]._0].x;
-   l.y=lpy-vertices[caras[i]._0].y;
-   l.z=lpz-vertices[caras[i]._0].z;
+   l.x=lpx-vertices[i].x;
+   l.y=lpy-vertices[i].y;
+   l.z=lpz-vertices[i].z;
    modulo=sqrt(l.x*l.x+l.y*l.y+l.z*l.z);
    l.x/=modulo;
    l.y/=modulo;
    l.z/=modulo;
    
-   escalar=l.x*normales_caras[i].x+l.y*normales_caras[i].y+l.z*normales_caras[i].z;
+   escalar=l.x*normales_vertices[i].x
+          +l.y*normales_vertices[i].y
+          +l.z*normales_vertices[i].z;
+
    if (escalar>0.0)
-     {colores_caras[i].r=kr*escalar;
-      colores_caras[i].g=kg*escalar;
-      colores_caras[i].b=kb*escalar;
+     {colores_vertices[i].r=kr*escalar;
+      colores_vertices[i].g=kg*escalar;
+      colores_vertices[i].b=kb*escalar;
      }
-   else {colores_caras[i].r=0.0;
-        colores_caras[i].g=0.0;
-        colores_caras[i].b=0.0;
+   else {colores_vertices[i].r=0.0;
+        colores_vertices[i].g=0.0;
+        colores_vertices[i].b=0.0;
         }
   }
 }
@@ -454,7 +621,7 @@ _objeto_ply::_objeto_ply()
 }
 
 
-
+//beethoven
 void _objeto_ply::parametros(char *archivo)
 {
 int i, n_ver,n_car;
@@ -495,6 +662,7 @@ calcular_normales_vertices();
 //gradiente_vertical(1,0.5,0.5,0,1,0.75);
 
 colors_diffuse_flat((float)206/255.0,(float)208/255.0,(float)211/255.0,20,40,20);
+colors_diffuse_gouraud((float)206/255.0,(float)208/255.0,(float)211/255.0,20,40,20);
 }
 
 

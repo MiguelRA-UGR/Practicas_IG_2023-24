@@ -161,13 +161,45 @@ switch (t_objeto){
 
 
 //**************************************************************************
+//  luces
+//***************************************************************************
+
+void luces()
+{ 
+    // Definir propiedades de la luz
+    GLfloat luz_ambiental[] = {0.05, 0.05, 0.05, 1.0};
+    GLfloat luz_difusa[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat luz_especular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat luz_posicion[] = {0.0, 0.0, 20.0, 1.0};
+
+    // Habilitar iluminación y la luz específica (GL_LIGHT0)
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    // Configurar propiedades de la luz
+    glLightfv(GL_LIGHT0, GL_AMBIENT, luz_ambiental);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, luz_difusa);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular);
+    glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
+
+    // Deshabilitar la luz (GL_LIGHT0)
+    glDisable(GL_LIGHT0);
+    
+    // También puedes deshabilitar la iluminación si es necesario
+    glDisable(GL_LIGHTING);
+}
+
+
+//**************************************************************************
 //
 //***************************************************************************
+
 
 void draw(void)
 {
 clean_window();
 change_observer();
+luces();
 //draw_axis();
 draw_objects();
 glutSwapBuffers();
@@ -212,9 +244,12 @@ switch (toupper(Tecla1)){
 	case '2':modo=EDGES;break;
 	case '3':modo=SOLID;break;
 	case '4':modo=SOLID_COLORS;break;
-    	case '5':modo=ROJOS;break;
-	case '6':modo=VERDES;break;
-	case '7':modo=AZULES;break;
+    case '5':modo=SOLID_COLORS_GOURAUD;break;
+    case '6':modo=SOLIDO_PHONG_FLAT;break;
+    case '7':modo=SOLIDO_PHONG_GOURAUD;break;
+    case '8':modo=ROJOS;break;
+	case '9':modo=VERDES;break;
+	case '0':modo=AZULES;break;
 	
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
