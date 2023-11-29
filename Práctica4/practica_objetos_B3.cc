@@ -10,9 +10,12 @@
 #include "include/irrKlang.h"
 #include <thread>
 #include <chrono>
+#include "include/CImg.h"
 
 using namespace irrklang;
 using namespace std;
+using namespace cimg_library;
+
 
 ISoundEngine *sonido = createIrrKlangDevice();
     
