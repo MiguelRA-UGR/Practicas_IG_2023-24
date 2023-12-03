@@ -4,7 +4,7 @@
 #include <GL/glu.h>
 #include <string>
 
-const float AxisSize=10000;
+const float AxisSize=1000000;
 // ----------------------------------------------------------------------
 // NECESARIO PARA CARGAR LAS IMÁGENES DE DISCO
 #include "CImg.h"
@@ -70,31 +70,30 @@ GLfloat texVertices[] = {0.0, 0.5,  0.5, 0.5,   0.25, 0.0,
                         0.0, 1.0,   0.5, 0.0,   0.5, 1.0};
 */
 GLfloat vertices[] = {
-   // Suelo
-   -25, 0, -25,   25, 0, -25,   25, 0, 25,
-   -25, 0, -25,   25, 0, 25,   -25, 0, 25,
+// Suelo
+-100, -100, -100,   100, -100, -100,   100, -100, 100,
+-100, -100, -100,   100, -100, 100,   -100, -100, 100,
 
-   // Frontal
-   25, 50, -25,   -25, 50, -25,   25, 0, -25,
-   25, 0, -25,    -25, 50, -25,   -25, 0, -25,
+// Frontal
+100, 100, -100,   -100, 100, -100,   100, -100, -100,
+100, -100, -100,   -100, 100, -100,   -100, -100, -100,
 
-   // Techo
-   -25, 50, 25,   -25, 50, -25,   25, 50, -25,
-   -25, 50, 25,   25, 50, 25,   25, 50, -25,
+// Techo
+-100, 100, 100,   -100, 100, -100,   100, 100, -100,
+-100, 100, 100,   100, 100, 100,   100, 100, -100,
 
-   // Izquierdo
-   -25, 50, 25,   -25, 50, -25,   -25, 0, -25,
-   -25, 50, 25,   -25, 0, 25,     -25, 0, -25,
+// Izquierdo
+-100, 100, 100,   -100, 100, -100,   -100, -100, -100,
+-100, 100, 100,   -100, -100, 100,     -100, -100, -100,
 
-   // Derecho
-   25, 50, 25,   25, 50, -25,   25, 0, -25,
-   25, 50, 25,   25, 0, 25,   25, 0, -25,
+// Derecho
+100, 100, 100,   100, 100, -100,   100, -100, -100,
+100, 100, 100,   100, -100, 100,   100, -100, -100,
 
-   // Posterior
-   -25, 0, 25,   25, 0, 25,   25, 50, 25,
-   -25, 0, 25,   -25, 50, 25,   25, 50, 25
-   
-   
+// Posterior
+-100, -100, 100,   100, -100, 100,   100, 100, 100,
+-100, -100, 100,   -100, 100, 100,   100, 100, 100
+
 };
 
 GLfloat texVertices[] = {
@@ -138,9 +137,9 @@ void Init(int argc, char **argv){
    glEnable(GL_DEPTH_TEST);
    //glEnable(GL_COLOR_MATERIAL);
    glMatrixMode(GL_PROJECTION);
-   gluPerspective( 40.0, 800/600.0f, 0.1, 150);
+   gluPerspective( 40.0, 800/600.0f, 0.1, 500);
   
-   prepara_textura("skybox.jpg", &textura_id);
+   prepara_textura("skybox.jpeg", &textura_id);
 }
 
 void draw_axis(){
@@ -187,7 +186,7 @@ void OnDraw(void){
    // define positive Y axis  -> (0.0, 1.0, 0.0)		
    gluLookAt (observador[0],observador[1],observador[2],0.0,0.0,0.0,0.0,1.0*cos(phir),0.0);
 
-   draw_axis();
+   //draw_axis();
    //Put your code here to draw objects
    dibuja();
 
