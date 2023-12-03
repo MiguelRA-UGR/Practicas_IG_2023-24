@@ -167,6 +167,8 @@ switch (t_objeto){
 //  luces
 //***************************************************************************
 
+//Lo mismo pero con una luz que se mueva
+
 void luces()
 { 
     // Definir propiedades de la luz
@@ -187,6 +189,9 @@ void luces()
 
     // También puedes deshabilitar la iluminación si es necesario
     glDisable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
 }
 
 

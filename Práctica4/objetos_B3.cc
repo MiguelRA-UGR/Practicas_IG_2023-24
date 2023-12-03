@@ -767,6 +767,8 @@ if (tapa_su==1)
     }
 }
 
+
+
 //colores de las caras
 //colors_random();
 gradiente_vertical(0.6,0.5,0,0,1,0.75);
