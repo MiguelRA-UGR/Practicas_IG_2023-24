@@ -47,11 +47,12 @@ glEnd();*/
 
 _triangulos3D::_triangulos3D()
 {
-  calculadas_normales_caras=0;
-  ambiente =_vertex4f(0.19,0.19,0.19,1.0);
-  difuso=_vertex4f(0.5,0.5,0.5,1.0);
-  especular=_vertex4f(0.5,0.5,0.5,1.0);
-  brillo=51.2;
+  calculadas_normales_caras = 0;
+  ambiente = _vertex4f(0.15, 0.15, 0.15, 1.0);
+  difuso = _vertex4f(0.45, 0.45, 0.45, 1.0);
+  especular = _vertex4f(0.4, 0.4, 0.4, 1.0);
+  brillo = 51.2;
+
 }
 
 
@@ -578,8 +579,16 @@ caras[9]._0=2;caras[9]._1=6;caras[9]._2=7;
 caras[10]._0=0;caras[10]._1=1;caras[10]._2=4;
 caras[11]._0=1;caras[11]._1=5;caras[11]._2=4; 
 
-//colores de las caras
-colors_random();
+//normales
+calcular_normales_caras();
+
+calcular_normales_vertices();
+
+//colors_random();
+//gradiente_vertical(1,0.5,0.5,0,1,0.75);
+
+colors_diffuse_flat((float)131/255.0,(float)24/255.0,(float)45/255.0,20,40,20);
+colors_diffuse_gouraud((float)56/255.0,(float)123/255.0,(float)56/255.0,20,50,20);
 }
 
 
@@ -606,8 +615,16 @@ caras[3]._0=3;caras[3]._1=0;caras[3]._2=4;
 caras[4]._0=3;caras[4]._1=1;caras[4]._2=0;
 caras[5]._0=3;caras[5]._1=2;caras[5]._2=1;
 
-//colores de las caras
-colors_random();
+//normales
+calcular_normales_caras();
+
+calcular_normales_vertices();
+
+//colors_random();
+//gradiente_vertical(1,0.5,0.5,0,1,0.75);
+
+colors_diffuse_flat((float)131/255.0,(float)24/255.0,(float)45/255.0,20,40,20);
+colors_diffuse_gouraud((float)56/255.0,(float)123/255.0,(float)56/255.0,20,50,20);
 }
 
 //*************************************************************************
@@ -767,11 +784,34 @@ if (tapa_su==1)
     }
 }
 
+//normales
+calcular_normales_caras();
 
+//calcular normales a los vértices de la esfera
+if(tipo==1){
+  int n_v = vertices.size();
+    normales_vertices.resize(n_v);
 
-//colores de las caras
+    for (int i = 0; i < n_v; i++) {
+
+        normales_vertices[i] = vertices[i];
+
+        // Normalizar el vector
+        float modulo = sqrt(normales_vertices[i].x * normales_vertices[i].x +
+                            normales_vertices[i].y * normales_vertices[i].y +
+                            normales_vertices[i].z * normales_vertices[i].z);
+
+        normales_vertices[i].x /= modulo;
+        normales_vertices[i].y /= modulo;
+        normales_vertices[i].z /= modulo;
+    }
+}else calcular_normales_vertices();
+
 //colors_random();
-gradiente_vertical(0.6,0.5,0,0,1,0.75);
+//gradiente_vertical(1,0.5,0.5,0,1,0.75);
+
+colors_diffuse_flat((float)131/255.0,(float)24/255.0,(float)45/255.0,20,40,20);
+colors_diffuse_gouraud((float)56/255.0,(float)123/255.0,(float)56/255.0,20,50,20);
 }
 
 
@@ -814,8 +854,16 @@ for (i=0;i<num_aux;i++)
    c=c+1;    
    }  
    
-//colores de las caras
-colors_random();
+//normales
+calcular_normales_caras();
+
+calcular_normales_vertices();
+
+//colors_random();
+//gradiente_vertical(1,0.5,0.5,0,1,0.75);
+
+colors_diffuse_flat((float)131/255.0,(float)24/255.0,(float)45/255.0,20,40,20);
+colors_diffuse_gouraud((float)56/255.0,(float)123/255.0,(float)56/255.0,20,50,20);
 }
 
 //************************************************************************
@@ -1117,10 +1165,24 @@ glPopMatrix();
 //************************************************************************
 
 _pie:: _pie(){
+  //Marron oscuro
+  calculadas_normales_caras = 0;
+  ambiente = _vertex4f(0.2, 0.1, 0.05, 1.0);
+  difuso = _vertex4f(0.4, 0.2, 0.1, 1.0);
+  especular = _vertex4f(0.4, 0.2, 0.1, 1.0);
+  brillo = 15.0;
+
+
   parametros("pie");
 };
 
 _tibia:: _tibia(){
+  calculadas_normales_caras = 0;
+  ambiente = _vertex4f(0.4, 0.2, 0.1, 1.0);
+  difuso = _vertex4f(0.6, 0.3, 0.15, 1.0);
+  especular = _vertex4f(0.6, 0.3, 0.15, 1.0);
+  brillo = 20.0;
+
   parametros("tibia");
 };
 
@@ -1138,10 +1200,20 @@ _cuerpo::_cuerpo(){
 };
 
 _torreta::_torreta(){
+  //Obsidiana
+  ambiente = _vertex4f(0.05, 0.05, 0.066, 0.82); 
+  difuso = _vertex4f(0.18, 0.17, 0.22, 0.82);    
+  especular = _vertex4f(0.33, 0.33, 0.34, 0.82);   
+  brillo = 51.2;
   parametros("torreta");
 };
 
 _boca_canion::_boca_canion(){
+  //Oro
+  ambiente = _vertex4f(0.25, 0.2, 0.08, 1.0); 
+  difuso = _vertex4f(0.75, 0.60, 0.22, 1.0);    
+  especular = _vertex4f(0.63, 0.55, 0.37, 1.0);   
+  brillo = 51.2;
   parametros("boca_canion");
 };
 
