@@ -16,6 +16,108 @@ using namespace irrklang;
 using namespace std;
 using namespace cimg_library;
 
+// FUNCIÓN QUE PREPARA LA TEXTURA
+void prepara_textura(char *file, GLuint *tex_id);
+
+// FUNCIÓN QUE DIBUJA
+void dibuja(void);
+
+// FUNCIÓN QUE LIBERA LA TEXTURA DE GPU
+void libera_textura(GLuint *tex_id);
+
+
+// IDENTIFICADOR DE TEXTURA
+GLuint textura_id;
+
+void prepara_textura (char *file, GLuint *tex_id )
+{
+   vector<unsigned char> data; 
+   CImg<unsigned char> image;
+
+   image.load(file);
+
+   // empaquetamos bien los datos
+   for (long y = 0; y < image.height(); y ++)
+      for (long x = 0; x < image.width(); x ++)
+      {
+	 unsigned char *r = image.data(x, y, 0, 0);
+	 unsigned char *g = image.data(x, y, 0, 1);
+	 unsigned char *b = image.data(x, y, 0, 2);
+	 data.push_back(*r);
+	 data.push_back(*g);
+	 data.push_back(*b);
+      }
+
+   glGenTextures(1, tex_id);
+   glBindTexture(GL_TEXTURE_2D, *tex_id);
+
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+   // TRASFIERE LOS DATOS A GPU
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width(), image.height(),
+		0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
+}
+
+
+
+GLfloat vertices[] = {
+// Suelo
+-250, 0, -250,   250, 0, -250,   250, 0, 250,
+-250, 0, -250,   250, 0, 250,   -250, 0, 250,
+
+// Frontal
+250, 300, -250,   -250, 300, -250,   250, -200, -250,
+250, -200, -250,   -250, 300, -250,   -250, -200, -250,
+
+// Techo
+-250, 300, 250,   -250, 300, -250,   250, 300, -250,
+-250, 300, 250,   250, 300, 250,   250, 300, -250,
+
+// Izquierdo
+-250, 300, 250,   -250, 300, -250,   -250, -200, -250,
+-250, 300, 250,   -250, -200, 250,     -250, -200, -250,
+
+// Derecho
+250, 300, 250,   250, 300, -250,   250, -200, -250,
+250, 300, 250,   250, -200, 250,   250, -200, -250,
+
+// Posterior
+-250, -200, 250,   250, -200, 250,   250, 300, 250,
+-250, -200, 250,   -250, 300, 250,   250, 300, 250
+
+
+};
+
+GLfloat texVertices[] = {
+   // Suelo
+   0.25, 0.5,    0.5, 0.5,    0.5, 0.75,
+   0.25, 0.5,    0.25, 0.75,  0.5, 0.75,
+
+   // Frontal
+   0.5, 0.25,    0.25, 0.25,  0.5, 0.5,
+   0.5, 0.5,     0.25, 0.25,  0.25, 0.5,
+
+   // Techo
+   0.25, 0.0,    0.25, 0.25,  0.5, 0.25,
+   0.25, 0.0,    0.5, 0.0,    0.5, 0.25,
+
+   // Izquierdo
+   0.0, 0.25,    0.25, 0.25,    0.25, 0.5,
+   0.0, 0.25,    0.0, 0.5,    0.25, 0.5,
+
+   // Derecho
+   0.75, 0.25,   0.5, 0.25,   0.5, 0.5,
+   0.75, 0.25,   0.75, 0.5,    0.5, 0.5,
+
+   // Posterior
+   1.0, 0.5,     0.75, 0.5,   0.75, 0.25,   
+   1.0, 0.5,    1, 0.25,   0.75, 0.25
+};
+
+
+int numDivisions = 3;
+
 
 ISoundEngine *sonido = createIrrKlangDevice();
     
@@ -157,8 +259,21 @@ switch (t_objeto){
         case ESFERA: esfera.draw(modo,1.0,0.0,0.0,5);break;
         case EXCAVADORA: excavadora.draw(modo,1.0,0.0,0.0,5);break;
         case EXTRUSION: extrusion->draw(modo,1.0,0.0,0.0,5);break;
-        case ATAT: atat.draw(modo,1.0,0.0,0.0,5);break;
+        case ATAT: atat.draw(modo,1.0,0.0,0.0,5);
+        
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
+
+        glBindTexture(GL_TEXTURE_2D, textura_id);
+        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        
+        break;
 	}
+
+    
 
 }
 
@@ -175,7 +290,7 @@ void luces()
     GLfloat luz_ambiental[] = {0.05, 0.05, 0.05, 1.0};
     GLfloat luz_difusa[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat luz_especular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat luz_posicion[] = {20.0, 20.0, 20.0, 1.0};
+    GLfloat luz_posicion[] = {10.0, 10.0, 10.0, 1.0};
 
     // Habilitar iluminación y la luz específica (GL_LIGHT0)
     glEnable(GL_LIGHTING);
@@ -204,7 +319,7 @@ void draw(void)
 {
 clean_window();
 change_observer();
-luces();
+//luces();
 //draw_axis();
 draw_objects();
 glutSwapBuffers();
@@ -788,6 +903,7 @@ glClearColor(1,1,1,1);
 glEnable(GL_DEPTH_TEST);
 change_projection();
 glViewport(0,0,Window_width,Window_high);
+prepara_textura("skybox.jpeg", &textura_id);
 }
 
 
@@ -880,5 +996,11 @@ perfil_ply.parametros_PLY(argv[2],50);
 
 // inicio del bucle de eventos
 glutMainLoop();
+libera_textura(&textura_id);
 return 0;
+}
+
+void libera_textura (GLuint *tex_id)
+{
+   glDeleteTextures(1, tex_id);
 }
