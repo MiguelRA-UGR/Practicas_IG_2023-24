@@ -261,22 +261,34 @@ switch (t_objeto){
         case EXTRUSION: extrusion->draw(modo,1.0,0.0,0.0,5);break;
         case ATAT: atat.draw(modo,1.0,0.0,0.0,5);
         
+        
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
+        glShadeModel(GL_FLAT);
+        glEnable(GL_LIGHTING);
 
         glBindTexture(GL_TEXTURE_2D, textura_id);
         glVertexPointer(3, GL_FLOAT, 0, vertices);
         glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         
+
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_LIGHTING);
+
+   
+        
+        
+
         break;
 	}
 
     
 
 }
-
 
 //**************************************************************************
 //  luces
@@ -290,7 +302,7 @@ void luces()
     GLfloat luz_ambiental[] = {0.05, 0.05, 0.05, 1.0};
     GLfloat luz_difusa[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat luz_especular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat luz_posicion[] = {10.0, 10.0, 10.0, 1.0};
+    GLfloat luz_posicion[] = {20.0, 20.0, 20.0, 1.0};
 
     // Habilitar iluminación y la luz específica (GL_LIGHT0)
     glEnable(GL_LIGHTING);
@@ -319,12 +331,11 @@ void draw(void)
 {
 clean_window();
 change_observer();
-//luces();
+luces();
 //draw_axis();
 draw_objects();
 glutSwapBuffers();
 }
-
 
 
 //***************************************************************************
@@ -345,7 +356,6 @@ change_projection();
 glViewport(0,0,Ancho1,Alto1);
 glutPostRedisplay();
 }
-
 
 //***************************************************************************
 // Funcion llamada cuando se aprieta una tecla normal
@@ -747,30 +757,6 @@ switch (Tecla1){
         caminar(-velocidad);
     break;
 
-
-    /*MOVIMIENTO EXCAVADORA
-         case GLUT_KEY_F1:excavadora.giro_cabina+=5;break;
-   case GLUT_KEY_F2:excavadora.giro_cabina-=5;break;
-   case GLUT_KEY_F3:excavadora.giro_primer_brazo+=1;
-        if (excavadora.giro_primer_brazo > excavadora.giro_primer_brazo_max)
-            excavadora.giro_primer_brazo = excavadora.giro_primer_brazo_max;break;
-   case GLUT_KEY_F4:excavadora.giro_primer_brazo-=1;
-        if (excavadora.giro_primer_brazo < excavadora.giro_primer_brazo_min)
-            excavadora.giro_primer_brazo = excavadora.giro_primer_brazo_min;break;
-   case GLUT_KEY_F5:excavadora.giro_segundo_brazo+=1;
-        if (excavadora.giro_segundo_brazo > excavadora.giro_segundo_brazo_max)
-            excavadora.giro_segundo_brazo = excavadora.giro_segundo_brazo_max;break;
-   case GLUT_KEY_F6:excavadora.giro_segundo_brazo-=1;
-        if (excavadora.giro_segundo_brazo < excavadora.giro_segundo_brazo_min) 
-            excavadora.giro_segundo_brazo = excavadora.giro_segundo_brazo_min;break;
-   case GLUT_KEY_F7:excavadora.giro_pala+=1;
-        if (excavadora.giro_pala > excavadora.giro_pala_max)
-            excavadora.giro_pala = excavadora.giro_pala_max;break;
-   case GLUT_KEY_F8:excavadora.giro_pala-=1;
-        if (excavadora.giro_pala < excavadora.giro_pala_min)
-            excavadora.giro_pala = excavadora.giro_pala_min;break;
-    */
-  
 	}
 glutPostRedisplay();
 }

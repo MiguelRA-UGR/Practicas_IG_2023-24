@@ -269,6 +269,7 @@ void _triangulos3D::draw_solido_phong_flat(){
       }
   glEnd();
 
+  glDisable(GL_NORMALIZE);
   glDisable(GL_LIGHTING);
 }
 
@@ -297,6 +298,7 @@ void _triangulos3D::draw_solido_phong_gouraud(){
       }
   glEnd();
 
+  glDisable(GL_NORMALIZE);
   glDisable(GL_LIGHTING);
 }
 
