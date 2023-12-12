@@ -59,7 +59,7 @@ void prepara_textura (char *file, GLuint *tex_id )
 		0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
 }
 
-
+//Cubo del Skybox
 
 GLfloat vertices[] = {
 // Suelo
@@ -115,9 +115,7 @@ GLfloat texVertices[] = {
    1.0, 0.5,    1, 0.25,   0.75, 0.25
 };
 
-
 int numDivisions = 3;
-
 
 ISoundEngine *sonido = createIrrKlangDevice();
     
@@ -163,11 +161,13 @@ bool canion=true;
 bool sonido_on=false;
 bool disparo_habilitado=false;
 bool empezar_pasos=false;
+bool segunda_luz=false;
 
 float giro1=0, giro2=0, giro3=0, giro4=0;
 float retro=0;
 float velocidad_disparo=10;
 float velocidad=0.25;
+float giro_luz=0;
 int pulsar=0;
 int paso_cabeza=0;
 int paso_piernas=0;
@@ -294,32 +294,43 @@ switch (t_objeto){
 //  luces
 //***************************************************************************
 
-//Lo mismo pero con una luz que se mueva
-
 void luces()
-{ 
-    // Definir propiedades de la luz
+{
     GLfloat luz_ambiental[] = {0.05, 0.05, 0.05, 1.0};
     GLfloat luz_difusa[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat luz_especular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat luz_posicion[] = {20.0, 20.0, 20.0, 1.0};
 
-    // Habilitar iluminación y la luz específica (GL_LIGHT0)
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    // Configurar propiedades de la luz
     glLightfv(GL_LIGHT0, GL_AMBIENT, luz_ambiental);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, luz_difusa);
     glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular);
     glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
 
-    // También puedes deshabilitar la iluminación si es necesario
-    glDisable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHT2);
+    if (segunda_luz)
+    {
+        GLfloat luz_ambiental2[] = {0.0, 0.0, 0.2, 1.0};
+        GLfloat luz_difusa2[] = {0.0, 0.0, 1.0, 1.0};    
+        GLfloat luz_especular2[] = {0.0, 0.0, 1.0, 1.0};
+        GLfloat luz_posicion2[] = {10.0 * cos(giro_luz), 20.0, 10.0 * sin(giro_luz), 1.0};
+
+        glEnable(GL_LIGHT1);
+        glLightfv(GL_LIGHT1, GL_AMBIENT, luz_ambiental2);
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_difusa2);
+        glLightfv(GL_LIGHT1, GL_SPECULAR, luz_especular2);
+        glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion2);
+    }
+    else
+    {
+        glDisable(GL_LIGHT1);
+    }
+
+
+     glDisable(GL_LIGHTING);
 }
+
 
 
 //**************************************************************************
@@ -380,7 +391,10 @@ switch (toupper(Tecla1)){
     case '8':modo=ROJOS;break;
 	case '9':modo=VERDES;break;
 	case '0':modo=AZULES;break;
-	
+
+        case 'I':segunda_luz=!segunda_luz;break;
+        case 'Y':giro_luz+=0.1;break;
+        case 'T':giro_luz-=0.1;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
         case 'O':t_objeto=OBJETO_PLY;break;	
@@ -388,9 +402,8 @@ switch (toupper(Tecla1)){
         case 'L':t_objeto=CILINDRO;break;
         case 'N':t_objeto=CONO;break;
         case 'E':t_objeto=ESFERA;break;
-        case 'A':t_objeto=EXCAVADORA;break;
         case 'X':t_objeto=EXTRUSION;break;
-        case 'T':t_objeto=ATAT;break;
+        case 'A':t_objeto=ATAT;break;
         case 'K':sonido_on=!sonido_on;
             disparo_habilitado=true; 
             if(!sonido_on)sonido->stopAllSounds();break;
