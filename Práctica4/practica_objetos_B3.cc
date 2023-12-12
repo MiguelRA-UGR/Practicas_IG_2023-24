@@ -392,9 +392,6 @@ switch (toupper(Tecla1)){
 	case '9':modo=VERDES;break;
 	case '0':modo=AZULES;break;
 
-        case 'I':segunda_luz=!segunda_luz;break;
-        case 'Y':giro_luz+=0.1;break;
-        case 'T':giro_luz-=0.1;break;
         case 'P':t_objeto=PIRAMIDE;break;
         case 'C':t_objeto=CUBO;break;
         case 'O':t_objeto=OBJETO_PLY;break;	
@@ -404,6 +401,7 @@ switch (toupper(Tecla1)){
         case 'E':t_objeto=ESFERA;break;
         case 'X':t_objeto=EXTRUSION;break;
         case 'A':t_objeto=ATAT;break;
+        //excavadora deshabilitada
         case 'K':sonido_on=!sonido_on;
             disparo_habilitado=true; 
             if(!sonido_on)sonido->stopAllSounds();break;
@@ -422,6 +420,9 @@ switch (toupper(Tecla1)){
                      retro=0;
                      }    
                  break;
+        case 'I':segunda_luz=!segunda_luz;break;
+        case 'Y':giro_luz+=0.1;break;
+        case 'T':giro_luz-=0.1;break;
         
 	}
 glutPostRedisplay();
