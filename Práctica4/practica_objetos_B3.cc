@@ -267,6 +267,8 @@ switch (t_objeto){
         glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
         glShadeModel(GL_FLAT);
         glEnable(GL_LIGHTING);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
 
         glBindTexture(GL_TEXTURE_2D, textura_id);
         glVertexPointer(3, GL_FLOAT, 0, vertices);
@@ -962,7 +964,7 @@ glutInitWindowSize(Window_width,Window_high);
 
 // llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 // al bucle de eventos)
-glutCreateWindow("PRACTICA - 3");
+glutCreateWindow("PRACTICA - 4");
 
 // asignación de la funcion llamada "dibujar" al evento de dibujo
 glutDisplayFunc(draw);
