@@ -7,7 +7,7 @@ CPPFLAGS = -Wall -fmax-errors=2 -g -I"include"
 LDFLAGS = bin/linux-gcc-64/libIrrKlang.so -pthread
 
 x: $(EJECUTABLE)
-	./$(EJECUTABLE) beethoven perfil_ply
+	./$(EJECUTABLE) ply/beethoven ply/perfil_ply
 
 $(EJECUTABLE): $(MODULOS)
 	$(CC) -o $(EJECUTABLE) $(CPPFLAGS) $(MODULOS) $(LIBS) $(LDFLAGS)

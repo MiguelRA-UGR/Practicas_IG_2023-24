@@ -1175,7 +1175,7 @@ _pie:: _pie(){
   brillo = 15.0;
 
 
-  parametros("pie");
+  parametros("ply/pie");
 };
 
 _tibia:: _tibia(){
@@ -1185,20 +1185,20 @@ _tibia:: _tibia(){
   especular = _vertex4f(0.6, 0.3, 0.15, 1.0);
   brillo = 20.0;
 
-  parametros("tibia");
+  parametros("ply/tibia");
 };
 
 _femur:: _femur(){
-  parametros("femur");
+  parametros("ply/femur");
 };
 
 
 _cabeza:: _cabeza(){
-  parametros("cabeza");
+  parametros("ply/cabeza");
 };
 
 _cuerpo::_cuerpo(){
-  parametros("cuerpo");
+  parametros("ply/cuerpo");
 };
 
 _torreta::_torreta(){
@@ -1207,7 +1207,7 @@ _torreta::_torreta(){
   difuso = _vertex4f(0.18, 0.17, 0.22, 0.82);    
   especular = _vertex4f(0.33, 0.33, 0.34, 0.82);   
   brillo = 51.2;
-  parametros("torreta");
+  parametros("ply/torreta");
 };
 
 _boca_canion::_boca_canion(){
@@ -1216,7 +1216,7 @@ _boca_canion::_boca_canion(){
   difuso = _vertex4f(0.75, 0.60, 0.22, 1.0);    
   especular = _vertex4f(0.63, 0.55, 0.37, 1.0);   
   brillo = 51.2;
-  parametros("boca_canion");
+  parametros("ply/boca_canion");
 };
 
 _rodilla::_rodilla(){

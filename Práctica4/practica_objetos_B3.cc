@@ -123,8 +123,8 @@ ISoundEngine *sonido = createIrrKlangDevice();
 typedef enum{CUBO, PIRAMIDE, OBJETO_PLY, ROTACION, CILINDRO, CONO, ESFERA, EXTRUSION, EXCAVADORA,ATAT} _tipo_objeto;
 typedef enum{UNO,DOS,TRES,CUATRO} _turno_pata;
 typedef enum{FEMUR_UP,TIBIA_UP,PATA_DOWN} _turno_parte;
-_tipo_objeto t_objeto=CUBO;
-_modo   modo=POINTS;
+_tipo_objeto t_objeto=ATAT;
+_modo   modo=SOLID_COLORS;
 _turno_pata turno_pata =UNO;
 _turno_parte turno_parte =FEMUR_UP;
 
@@ -261,7 +261,7 @@ switch (t_objeto){
         case EXTRUSION: extrusion->draw(modo,1.0,0.0,0.0,5);break;
         case ATAT: atat.draw(modo,1.0,0.0,0.0,5);
         
-        
+        //Código del skybox
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState (GL_TEXTURE_COORD_ARRAY_EXT);
@@ -273,21 +273,13 @@ switch (t_objeto){
         glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         
-
         glDisableClientState(GL_VERTEX_ARRAY);
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_LIGHTING);
 
-   
-        
-        
-
         break;
 	}
-
-    
-
 }
 
 //**************************************************************************
