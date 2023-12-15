@@ -9,7 +9,7 @@
 
 
 const float AXIS_SIZE=5000;
-typedef enum{POINTS,EDGES,SOLID,SOLID_COLORS,SOLID_COLORS_GOURAUD,SOLIDO_PHONG_FLAT,SOLIDO_PHONG_GOURAUD,ROJOS,VERDES,AZULES} _modo;
+typedef enum{POINTS,EDGES,SOLID,SOLID_COLORS,SELECT,SOLID_COLORS_GOURAUD,SOLIDO_PHONG_FLAT,SOLIDO_PHONG_GOURAUD,ROJOS,VERDES,AZULES} _modo;
 
 //*************************************************************************
 // clase punto
@@ -40,6 +40,7 @@ public:
 void 	draw_aristas(float r, float g, float b, int grosor);
 void    draw_solido(float r, float g, float b);
 void 	draw_solido_colores(int modo);
+void   draw_seleccion(int r, int g, int b);
 void 	draw_solido_colores_vertices(int modo);
 void 	draw_solido_phong_flat();
 void 	draw_solido_phong_gouraud();
@@ -396,6 +397,7 @@ class _cabeza_artillada: public _triangulos3D{
 class _atat: public _triangulos3D{
        public:
        _atat();
+       void  seleccion();
 
        void  draw(_modo modo, float r, float g, float b, float grosor);
 
@@ -409,7 +411,13 @@ class _atat: public _triangulos3D{
        float giro_pata_4;
        float giro_patas_max;
 
-       _cabeza_artillada cabeza;
+       _vertex3f color_pick;
+       vector<_vertex3i> color_select;
+       vector<int> activo;
+       int piezas;
+       int grosor_select;  
+
+        _cabeza_artillada cabeza;
        _pata pata_1;
        _pata pata_2;
        _pata pata_3;

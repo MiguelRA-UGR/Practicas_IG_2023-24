@@ -152,6 +152,24 @@ void _triangulos3D::draw_solido_colores(int modo)
 glEnd();
 }
 
+//*************************************************************************
+// dibujar en modo seleccion
+//*************************************************************************
+
+void _triangulos3D::draw_seleccion(int r, int g, int b)
+{
+int i;
+
+glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+glColor3ub(r,g,b);
+glBegin(GL_TRIANGLES);
+for (i=0;i<caras.size();i++){
+	glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+	glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+	}
+glEnd();
+}
 
 void _triangulos3D::draw_solido_colores_vertices(int modo)
 { int i;
@@ -319,6 +337,7 @@ switch (modo){
   case ROJOS:draw_solido_colores(1);break;
   case VERDES:draw_solido_colores(2);break;
   case AZULES:draw_solido_colores(3);break;
+  case SELECT:draw_seleccion(r,g,b);break;
 	}
 }//*************************************************************************
 // normales 
@@ -681,8 +700,9 @@ calcular_normales_vertices();
 //colors_random();
 //gradiente_vertical(1,0.5,0.5,0,1,0.75);
 
-colors_diffuse_flat((float)206/255.0,(float)208/255.0,(float)211/255.0,20,40,20);
-colors_diffuse_gouraud((float)206/255.0,(float)208/255.0,(float)211/255.0,20,50,20);
+
+colors_diffuse_flat((float)125/255.0,(float)205/255.0,(float)190/255.0,20,40,20);
+colors_diffuse_gouraud((float)225/255.0,(float)130/255.0,(float)20/255.0,20,50,20);
 }
 
 
@@ -1135,6 +1155,7 @@ tamanio_pala=0.15;
 };
 
 
+
 void _excavadora::draw(_modo modo, float r, float g, float b, float grosor)
 {
 glPushMatrix();
@@ -1320,48 +1341,129 @@ _atat::_atat(){
   giro_pata_3=0;
   giro_pata_4=0;
   giro_patas_max=45;
+
+  int color=1;
+  piezas=6;
+  grosor_select=2;
+  color_pick=_vertex3f(1.0,0.0,0.0); 
+  color_select.resize(piezas);
+  activo.resize(piezas);
+
+for (int i=0;i<piezas;i++)
+  {activo[i]=0;
+   color_select[i].r=color_select[i].g=color_select[i].b=color;
+   color+=1;
+  }
+
 };
 
 void _atat::draw(_modo modo, float r, float g, float b, float grosor){
   
+  float r_p,g_p,b_p;
+  int tam=2;
+
+  r_p=color_pick.r;
+  g_p=color_pick.g;
+  b_p=color_pick.b;
+
+
   glScalef(0.05,0.05,0.05);
   glTranslatef(0,-30,0);
 
   glPushMatrix();
   glTranslatef(0,33,0);
-  cuerpo.draw(modo,r,g,b,grosor);
+  if (activo[0]==1) cuerpo.draw(EDGES, r_p, g_p, b_p, grosor_select);
+  else cuerpo.draw(modo,r,g,b,grosor);
+  
   glPopMatrix();
 
   glPushMatrix();
   glTranslatef(38,42,0);
   glRotatef(giro_cabeza_z,0,0,1);
   glRotatef(giro_cabeza_y,0,1,0);
-  cabeza.draw(modo,r,g,b,grosor);
+  if (activo[1]==1) cabeza.draw(EDGES, r_p, g_p, b_p, grosor_select);
+  else cabeza.draw(modo,r,g,b,grosor);
   glPopMatrix();
 
   glPushMatrix();
   glTranslatef(22,37,7);
   glRotatef(giro_pata_2,0,0,1);
-  pata_2.draw(modo,r,g,b,grosor);
+  if (activo[2]==1) pata_2.draw(EDGES, r_p, g_p, b_p, grosor_select);
+  else pata_2.draw(modo,r,g,b,grosor);
   glPopMatrix();
 
   glPushMatrix();
   glRotatef(180,0,1,0);
   glTranslatef(-22,37,7);
   glRotatef(-giro_pata_1,0,0,1);
-  pata_1.draw(modo,r,g,b,grosor);
+  if (activo[3]==1) pata_1.draw(EDGES, r_p, g_p, b_p, grosor_select);
+  else pata_1.draw(modo,r,g,b,grosor);
   glPopMatrix();
 
   glPushMatrix();
   glTranslatef(-18,37,7);
   glRotatef(giro_pata_3,0,0,1);
-  pata_3.draw(modo,r,g,b,grosor);
+  if (activo[4]==1) pata_3.draw(EDGES, r_p, g_p, b_p, grosor_select);
+  else pata_3.draw(modo,r,g,b,grosor);
   glPopMatrix();
 
   glPushMatrix();
   glRotatef(180,0,1,0);
   glTranslatef(18,37,7);
   glRotatef(-giro_pata_4,0,0,1);
-  pata_4.draw(modo,r,g,b,grosor);
+  if (activo[5]==1) pata_4.draw(EDGES, r_p, g_p, b_p, grosor_select);
+  else pata_4.draw(modo,r,g,b,grosor);
   glPopMatrix();
-}
+};
+
+void _atat::seleccion()
+{
+_vertex3i color;
+
+  glScalef(0.05,0.05,0.05);
+  glTranslatef(0,-30,0);
+
+  glPushMatrix();
+  glTranslatef(0,33,0);
+  color=color_select[0];
+  cuerpo.draw(SELECT, color.r, color.g, color.b, 1);
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(38,42,0);
+  glRotatef(giro_cabeza_z,0,0,1);
+  glRotatef(giro_cabeza_y,0,1,0);
+  color=color_select[1];
+  cabeza.draw(SELECT, color.r, color.g, color.b, 1);
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(22,37,7);
+  glRotatef(giro_pata_2,0,0,1);
+  color=color_select[2];
+  pata_2.draw(SELECT, color.r, color.g, color.b, 1);
+  glPopMatrix();
+
+  glPushMatrix();
+  glRotatef(180,0,1,0);
+  glTranslatef(-22,37,7);
+  glRotatef(-giro_pata_1,0,0,1);
+  color=color_select[3];
+  pata_1.draw(SELECT, color.r, color.g, color.b, 1);
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(-18,37,7);
+  glRotatef(giro_pata_3,0,0,1);
+  color=color_select[4];
+  pata_3.draw(SELECT, color.r, color.g, color.b, 1);
+  glPopMatrix();
+
+  glPushMatrix();
+  glRotatef(180,0,1,0);
+  glTranslatef(18,37,7);
+  glRotatef(-giro_pata_4,0,0,1);
+  color=color_select[5];
+  pata_4.draw(SELECT, color.r, color.g, color.b, 1);
+  glPopMatrix();
+};

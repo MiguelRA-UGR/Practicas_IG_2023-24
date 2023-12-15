@@ -1,5 +1,5 @@
 //**************************************************************************
-// Práctica 3 
+// Práctica 5 
 //**************************************************************************
 
 #include <GL/glut.h>
@@ -173,6 +173,8 @@ int paso_cabeza=0;
 int paso_piernas=0;
 int paso_canion=0;
 
+int estadoRaton, xc, yc;
+
 std::chrono::steady_clock::time_point ultimo_disparo=std::chrono::steady_clock::now();
 
 //**************************************************************************
@@ -334,12 +336,21 @@ void luces()
 
 void draw(void)
 {
+glDrawBuffer(GL_FRONT);
 clean_window();
 change_observer();
 luces();
 //draw_axis();
 draw_objects();
-glutSwapBuffers();
+
+if (t_objeto==ATAT)
+  {glDrawBuffer(GL_BACK);
+   clean_window();
+   change_observer();
+   atat.seleccion();
+  }
+
+glFlush();
 }
 
 
@@ -771,6 +782,85 @@ glutPostRedisplay();
 
 
 //***************************************************************************
+// Funciones para la selección por color
+//***************************************************************************
+
+void procesar_color(unsigned char color[3])
+{
+int i;
+
+for (i=0;i<atat.piezas;i++)
+   {if (color[0]==atat.color_select[i].r &&
+        color[1]==atat.color_select[i].g &&
+        color[2]==atat.color_select[i].r)
+       {if (atat.activo[i]==0) 
+                      {atat.activo[i]=1;
+                      }
+                  else 
+                      {atat.activo[i]=0;
+                      }
+         glutPostRedisplay();
+        }
+    }                
+}
+
+//***************************************************************************
+
+void pick_color(int x, int y)
+{
+GLint viewport[4];
+unsigned char pixel[3];
+
+glGetIntegerv(GL_VIEWPORT, viewport);
+glReadBuffer(GL_BACK);
+glReadPixels(x,viewport[3]-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);
+printf(" valor x %d, valor y %d, color %d, %d, %d \n",x,y,pixel[0],pixel[1],pixel[2]);
+
+procesar_color(pixel);
+}
+
+//***************************************************************************
+// Funciones para manejo de eventos del ratón
+//***************************************************************************
+
+void clickRaton( int boton, int estado, int x, int y )
+{
+if(boton==GLUT_RIGHT_BUTTON) 
+  {
+   if(estado==GLUT_DOWN) 
+     {
+      estadoRaton=1;
+      xc=x;
+      yc=y;
+     } 
+   else estadoRaton=0;
+   }
+if(boton==GLUT_LEFT_BUTTON) 
+  {
+   if(estado==GLUT_DOWN) 
+     {
+      estadoRaton=2;
+      xc=x;
+      yc=y;
+      pick_color(xc, yc);
+     } 
+  }
+}
+
+/*************************************************************************/
+
+void RatonMovido( int x, int y )
+{ 
+if(estadoRaton==1) 
+    {Observer_angle_y=Observer_angle_y-(x-xc);
+     Observer_angle_x=Observer_angle_x+(y-yc);
+     xc=x;
+     yc=y;
+     glutPostRedisplay();
+    }
+}
+
+//***************************************************************************
 // Funcion de animación automática
 //***************************************************************************
 
@@ -964,7 +1054,7 @@ glutInitWindowSize(Window_width,Window_high);
 
 // llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 // al bucle de eventos)
-glutCreateWindow("PRACTICA - 4");
+glutCreateWindow("PRACTICA - 5");
 
 // asignación de la funcion llamada "dibujar" al evento de dibujo
 glutDisplayFunc(draw);
@@ -987,6 +1077,9 @@ ply.parametros(argv[1]);
 perfil_ply.parametros_PLY(argv[2],50);
 
 //ply = new _objeto_ply(argv[1]);
+
+glutMouseFunc(clickRaton);
+glutMotionFunc(RatonMovido);
 
 // inicio del bucle de eventos
 glutMainLoop();
