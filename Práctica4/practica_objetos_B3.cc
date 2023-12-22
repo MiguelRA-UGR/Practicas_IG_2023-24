@@ -3,6 +3,7 @@
 //**************************************************************************
 
 #include <GL/glut.h>
+#include <GL/freeglut.h>
 #include <ctype.h>
 #include <math.h>
 #include <vector>
@@ -24,7 +25,6 @@ void dibuja(void);
 
 // FUNCIÓN QUE LIBERA LA TEXTURA DE GPU
 void libera_textura(GLuint *tex_id);
-
 
 // IDENTIFICADOR DE TEXTURA
 GLuint textura_id;
@@ -88,6 +88,8 @@ GLfloat vertices[] = {
 
 
 };
+
+//Mapeo de la textura
 
 GLfloat texVertices[] = {
    // Suelo
@@ -186,7 +188,6 @@ void clean_window()
 
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
-
 
 //**************************************************************************
 // Funcion para definir la transformación de proyeccion
@@ -860,6 +861,13 @@ if(estadoRaton==1)
     }
 }
 
+void mouseWheel(int wheel, int direction, int x, int y) {
+
+    (direction > 0) ? Observer_distance *= 1.2 : Observer_distance /= 1.2;
+    
+    glutPostRedisplay();  
+}
+
 //***************************************************************************
 // Funcion de animación automática
 //***************************************************************************
@@ -1080,6 +1088,7 @@ perfil_ply.parametros_PLY(argv[2],50);
 
 glutMouseFunc(clickRaton);
 glutMotionFunc(RatonMovido);
+glutMouseWheelFunc(mouseWheel);
 
 // inicio del bucle de eventos
 glutMainLoop();
