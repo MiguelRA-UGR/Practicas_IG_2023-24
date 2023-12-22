@@ -156,8 +156,8 @@ _extrusion *extrusion;
 _atat atat;
 
 // Vista ortográfica
-int cambio=1;
-float izquierdas=-5.0, derechas=5.0, abajo=-5.0, arribas=5.0,cerca=-100,lejos=100;
+float izquierdas=-4.0, derechas=4.0, abajo=-4.0, arribas=4.0,cerca=-10,lejos=10,factor=1.0;
+int ancho=1, alto=1;
 
 // _objeto_ply *ply;
 
@@ -168,6 +168,7 @@ bool sonido_on=false;
 bool disparo_habilitado=false;
 bool empezar_pasos=false;
 bool segunda_luz=false;
+int cambio=0;
 
 float giro1=0, giro2=0, giro3=0, giro4=0;
 float retro=0;
@@ -202,6 +203,7 @@ void projection_perspective()
 
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
+glViewport(0,0,ancho,alto);
 
 // formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
 //  plano_delantero>0  plano_trasero>PlanoDelantero)
@@ -335,18 +337,23 @@ void luces()
 
 
 //**************************************************************************
-//  vista ortográfica
+//  vistas múltiples
 //***************************************************************************
 
-void projection_orthographic()
+void vistas_multiples()
 {
 
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
+glViewport(0, alto/2,ancho/2,alto/2);
 
 // formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
 //  plano_delantero>0  plano_trasero>PlanoDelantero)
-glOrtho (izquierdas, derechas, abajo, arribas, cerca, lejos);
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca*factor, lejos*factor);
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+
 }
 
 //**************************************************************************
@@ -362,7 +369,7 @@ if(cambio==0){
     projection_perspective();
     change_observer();
 } 
-else projection_orthographic();
+else vistas_multiples();
 
 luces();
 //draw_axis();
@@ -376,7 +383,7 @@ if (t_objeto==ATAT)
     projection_perspective();
     change_observer();
     } 
-    else projection_orthographic();
+    else vistas_multiples();
 
    atat.seleccion();
   }
@@ -401,6 +408,8 @@ Aspect_ratio=(float) Alto1/(float )Ancho1;
 Size_y=Size_x*Aspect_ratio;
 projection_perspective();
 glViewport(0,0,Ancho1,Alto1);
+//glViewport(Ancho1/4.0,Alto1/4.0,Ancho1/2.0,Alto1/2.0);
+ancho=Ancho1, alto=Alto1;
 glutPostRedisplay();
 }
 
@@ -437,8 +446,8 @@ switch (toupper(Tecla1)){
         case 'E':t_objeto=ESFERA;break;
         case 'X':t_objeto=EXTRUSION;break;
         case 'A':t_objeto=ATAT;break;
-        case ',':cambio=1;break;
-        case '.':cambio=0;break;
+        case ',':cambio=0;break;
+        case '.':cambio=1;break;
 
         //excavadora deshabilitada
         case 'K':sonido_on=!sonido_on;
@@ -879,6 +888,16 @@ if(boton==GLUT_LEFT_BUTTON)
       pick_color(xc, yc);
      } 
   }
+if(boton==3){
+    factor*=0.9;
+    Observer_distance *= 0.9;
+    glutPostRedisplay();
+}
+if(boton==4){
+    factor*=1.1;
+    Observer_distance *= 1.1;
+    glutPostRedisplay();
+}
 }
 
 /*************************************************************************/
@@ -892,13 +911,6 @@ if(estadoRaton==1)
      yc=y;
      glutPostRedisplay();
     }
-}
-
-void mouseWheel(int wheel, int direction, int x, int y) {
-
-    (direction > 0) ? Observer_distance *= 1.2 : Observer_distance /= 1.2;
-    
-    glutPostRedisplay();  
 }
 
 //***************************************************************************
@@ -1121,7 +1133,6 @@ perfil_ply.parametros_PLY(argv[2],50);
 
 glutMouseFunc(clickRaton);
 glutMotionFunc(RatonMovido);
-glutMouseWheelFunc(mouseWheel);
 
 // inicio del bucle de eventos
 glutMainLoop();
