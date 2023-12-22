@@ -155,6 +155,10 @@ _rotacion_PLY perfil_ply;
 _extrusion *extrusion;
 _atat atat;
 
+// Vista ortográfica
+int cambio=1;
+float izquierdas=-5.0, derechas=5.0, abajo=-5.0, arribas=5.0,cerca=-100,lejos=100;
+
 // _objeto_ply *ply;
 
 bool arriba=false;
@@ -193,7 +197,7 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 // Funcion para definir la transformación de proyeccion
 //***************************************************************************
 
-void change_projection()
+void projection_perspective()
 {
 
 glMatrixMode(GL_PROJECTION);
@@ -331,15 +335,35 @@ void luces()
 
 
 //**************************************************************************
-//
+//  vista ortográfica
 //***************************************************************************
 
+void projection_orthographic()
+{
+
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+
+// formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
+//  plano_delantero>0  plano_trasero>PlanoDelantero)
+glOrtho (izquierdas, derechas, abajo, arribas, cerca, lejos);
+}
+
+//**************************************************************************
+//
+//***************************************************************************
 
 void draw(void)
 {
 glDrawBuffer(GL_FRONT);
 clean_window();
-change_observer();
+
+if(cambio==0){
+    projection_perspective();
+    change_observer();
+} 
+else projection_orthographic();
+
 luces();
 //draw_axis();
 draw_objects();
@@ -347,7 +371,13 @@ draw_objects();
 if (t_objeto==ATAT)
   {glDrawBuffer(GL_BACK);
    clean_window();
-   change_observer();
+
+   if(cambio==0){
+    projection_perspective();
+    change_observer();
+    } 
+    else projection_orthographic();
+
    atat.seleccion();
   }
 
@@ -369,7 +399,7 @@ float Aspect_ratio;
 
 Aspect_ratio=(float) Alto1/(float )Ancho1;
 Size_y=Size_x*Aspect_ratio;
-change_projection();
+projection_perspective();
 glViewport(0,0,Ancho1,Alto1);
 glutPostRedisplay();
 }
@@ -407,6 +437,9 @@ switch (toupper(Tecla1)){
         case 'E':t_objeto=ESFERA;break;
         case 'X':t_objeto=EXTRUSION;break;
         case 'A':t_objeto=ATAT;break;
+        case ',':cambio=1;break;
+        case '.':cambio=0;break;
+
         //excavadora deshabilitada
         case 'K':sonido_on=!sonido_on;
             disparo_habilitado=true; 
@@ -993,7 +1026,7 @@ glClearColor(1,1,1,1);
 
 // se habilita el z-bufer
 glEnable(GL_DEPTH_TEST);
-change_projection();
+projection_perspective();
 glViewport(0,0,Window_width,Window_high);
 prepara_textura("skybox.jpeg", &textura_id);
 }
