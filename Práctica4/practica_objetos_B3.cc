@@ -86,7 +86,6 @@ GLfloat vertices[] = {
 -250, -200, 250,   250, -200, 250,   250, 300, 250,
 -250, -200, 250,   -250, 300, 250,   250, 300, 250
 
-
 };
 
 //Mapeo de la textura
@@ -156,8 +155,8 @@ _extrusion *extrusion;
 _atat atat;
 
 // Vista ortográfica
-float izquierdas=-4.0, derechas=4.0, abajo=-4.0, arribas=4.0,cerca=-10,lejos=10,factor=1.0;
-int ancho=1, alto=1;
+float izquierdas=-3.0, derechas=3.0, abajo=-3.0, arribas=3.0,cerca=-5,lejos=5,factor=1.0;
+int ancho, alto;
 
 // _objeto_ply *ply;
 
@@ -168,7 +167,8 @@ bool sonido_on=false;
 bool disparo_habilitado=false;
 bool empezar_pasos=false;
 bool segunda_luz=false;
-int cambio=0;
+bool cambio=true;
+bool skybox=true;
 
 float giro1=0, giro2=0, giro3=0, giro4=0;
 float retro=0;
@@ -270,6 +270,7 @@ switch (t_objeto){
         case EXTRUSION: extrusion->draw(modo,1.0,0.0,0.0,5);break;
         case ATAT: atat.draw(modo,1.0,0.0,0.0,5);
         
+        if(skybox){
         //Código del skybox
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -288,7 +289,7 @@ switch (t_objeto){
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_LIGHTING);
-
+        }
         break;
 	}
 }
@@ -342,19 +343,91 @@ void luces()
 
 void vistas_multiples()
 {
-
+// alzado
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
 glViewport(0, alto/2,ancho/2,alto/2);
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+draw_objects();
 
-// formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
-//  plano_delantero>0  plano_trasero>PlanoDelantero)
-glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca*factor, lejos*factor);
+// planta
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(0, 0,ancho/2,alto/2);
+
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
+glRotatef(90,1,0,0);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+draw_objects();
+
+//perfil
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(ancho/2,alto/2,ancho/2,alto/2);
+
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
+glRotatef(-90,0,1,0);
 
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
+draw_objects();
 
+//perspectiva
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(ancho/2, 0,ancho/2,alto/2);
+glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+change_observer();
+draw_objects();
 }
+
+void vistas_multiples_seleccion()
+{
+// alzado
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(0, alto/2,ancho/2,alto/2);
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca*factor, lejos*factor);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+atat.seleccion();
+
+// planta
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(0, alto/2,ancho/2,0);
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca*factor, lejos*factor);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+atat.seleccion();
+
+//perfil
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(ancho/2,alto/2,ancho/2,alto/2);
+glRotatef(-90,0,1,0);
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
+
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+atat.seleccion();
+
+//perspectiva
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glViewport(ancho/2, 0,ancho/2,alto/2);
+glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
+change_observer();
+atat.seleccion();
+}
+
 
 //**************************************************************************
 //
@@ -365,27 +438,26 @@ void draw(void)
 glDrawBuffer(GL_FRONT);
 clean_window();
 
-if(cambio==0){
+if(cambio){
     projection_perspective();
     change_observer();
+    //draw_axis();
+    draw_objects();
 } 
 else vistas_multiples();
 
 luces();
-//draw_axis();
-draw_objects();
 
 if (t_objeto==ATAT)
   {glDrawBuffer(GL_BACK);
    clean_window();
 
-   if(cambio==0){
+   if(cambio){
     projection_perspective();
     change_observer();
+    atat.seleccion();
     } 
-    else vistas_multiples();
-
-   atat.seleccion();
+    else vistas_multiples_seleccion();
   }
 
 glFlush();
@@ -446,8 +518,9 @@ switch (toupper(Tecla1)){
         case 'E':t_objeto=ESFERA;break;
         case 'X':t_objeto=EXTRUSION;break;
         case 'A':t_objeto=ATAT;break;
-        case ',':cambio=0;break;
-        case '.':cambio=1;break;
+        case ',':cambio=!cambio;
+                skybox=! skybox;
+                break;
 
         //excavadora deshabilitada
         case 'K':sonido_on=!sonido_on;
@@ -851,12 +924,11 @@ for (i=0;i<atat.piezas;i++)
 
 void pick_color(int x, int y)
 {
-GLint viewport[4];
+
 unsigned char pixel[3];
 
-glGetIntegerv(GL_VIEWPORT, viewport);
 glReadBuffer(GL_BACK);
-glReadPixels(x,viewport[3]-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);
+glReadPixels(x,alto-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);
 printf(" valor x %d, valor y %d, color %d, %d, %d \n",x,y,pixel[0],pixel[1],pixel[2]);
 
 procesar_color(pixel);
