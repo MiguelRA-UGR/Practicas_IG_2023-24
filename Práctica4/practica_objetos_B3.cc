@@ -303,7 +303,7 @@ void luces()
     GLfloat luz_ambiental[] = {0.05, 0.05, 0.05, 1.0};
     GLfloat luz_difusa[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat luz_especular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat luz_posicion[] = {20.0, 20.0, 20.0, 1.0};
+    GLfloat luz_posicion[] = {60.0, 80.0, 60.0, 1.0};
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -318,7 +318,7 @@ void luces()
         GLfloat luz_ambiental2[] = {0.0, 0.0, 0.2, 1.0};
         GLfloat luz_difusa2[] = {0.0, 0.0, 1.0, 1.0};    
         GLfloat luz_especular2[] = {0.0, 0.0, 1.0, 1.0};
-        GLfloat luz_posicion2[] = {10.0 * cos(giro_luz), 20.0, 10.0 * sin(giro_luz), 1.0};
+        GLfloat luz_posicion2[] = {10.0 * cos(giro_luz), 50.0, 10.0 * sin(giro_luz), 1.0};
 
         glEnable(GL_LIGHT1);
         glLightfv(GL_LIGHT1, GL_AMBIENT, luz_ambiental2);
@@ -347,7 +347,8 @@ void vistas_multiples()
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
 glViewport(0, alto/2,ancho/2,alto/2);
-glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
+glOrtho (derechas*factor, izquierdas*factor, abajo*factor, arribas*factor, cerca, lejos);
+glRotatef(180,0,1,0);
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 draw_objects();
