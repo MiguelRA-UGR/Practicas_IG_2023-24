@@ -356,7 +356,6 @@ draw_objects();
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
 glViewport(0, 0,ancho/2,alto/2);
-
 glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
 glRotatef(90,1,0,0);
 glMatrixMode(GL_MODELVIEW);
@@ -367,10 +366,8 @@ draw_objects();
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
 glViewport(ancho/2,alto/2,ancho/2,alto/2);
-
 glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
 glRotatef(-90,0,1,0);
-
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 draw_objects();
@@ -398,10 +395,12 @@ glLoadIdentity();
 atat.seleccion();
 
 // planta
+
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
-glViewport(0, alto/2,ancho/2,0);
-glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca*factor, lejos*factor);
+glViewport(0, 0,ancho/2,alto/2);
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
+glRotatef(90,1,0,0);
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 atat.seleccion();
@@ -410,9 +409,8 @@ atat.seleccion();
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
 glViewport(ancho/2,alto/2,ancho/2,alto/2);
-glRotatef(-90,0,1,0);
 glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
-
+glRotatef(-90,0,1,0);
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 atat.seleccion();
