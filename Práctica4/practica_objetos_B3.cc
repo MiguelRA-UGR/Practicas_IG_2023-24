@@ -93,7 +93,7 @@ GLfloat vertices[] = {
 GLfloat texVertices[] = {
    // Suelo
    0.25, 0.5,    0.5, 0.5,    0.5, 0.75,
-   0.25, 0.5,    0.25, 0.75,  0.5, 0.75,
+   0.25, 0.5,    0.5, 0.75,   0.25, 0.75,
 
    // Frontal
    0.5, 0.25,    0.25, 0.25,  0.5, 0.5,
@@ -170,7 +170,7 @@ bool segunda_luz=false;
 bool cambio=true;
 bool skybox=true;
 
-float giro1=0, giro2=0, giro3=0, giro4=0;
+float giro1=0, giro2=0;
 float retro=0;
 float velocidad_disparo=10;
 float velocidad=0.25;
@@ -347,8 +347,7 @@ void vistas_multiples()
 glMatrixMode(GL_PROJECTION);
 glLoadIdentity();
 glViewport(0, alto/2,ancho/2,alto/2);
-glOrtho (derechas*factor, izquierdas*factor, abajo*factor, arribas*factor, cerca, lejos);
-glRotatef(180,0,1,0);
+glOrtho (izquierdas*factor, derechas*factor, abajo*factor, arribas*factor, cerca, lejos);
 glMatrixMode(GL_MODELVIEW);
 glLoadIdentity();
 draw_objects();
@@ -460,6 +459,7 @@ if (t_objeto==ATAT)
   }
 
 glFlush();
+//glutSwapBuffers();
 }
 
 
@@ -535,7 +535,6 @@ switch (toupper(Tecla1)){
                  else
                     {giro1=0.0;
                      giro2=0.0;
-                     giro3=0.0;
                      pulsar=0;
                      retro=0;
                      }    
